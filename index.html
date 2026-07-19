@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Patient Intake Form</title>
+    <title>Feras Company - Patient Intake Form</title>
     <style>
         :root {
             --primary-color: #0056b3;
@@ -117,12 +117,6 @@
             min-height: 80px;
         }
 
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
         .btn-submit {
             background-color: var(--primary-color);
             color: white;
@@ -151,7 +145,6 @@
             border: 1px solid #c3e6cb;
         }
 
-        /* Responsive adjustments for smaller screens */
         @media (max-width: 600px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -166,7 +159,7 @@
 
     <div class="container">
         <div class="header">
-            <h1>St. Jude Medical Center</h1>
+            <h1>Feras Company</h1>
             <p>Confidential Patient Information Form</p>
         </div>
 
@@ -293,22 +286,16 @@
 
     <script>
         document.getElementById('patientForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Prevents the page from reloading
-            
-            // Here you would typically send the data to a backend server using fetch() or XMLHttpRequest
-            // For demonstration, we will just show the success message and clear the form
+            e.preventDefault(); 
             
             document.getElementById('success-message').style.display = 'block';
             
-            // Reset the form
             this.reset();
 
-            // Hide the success message after 5 seconds
             setTimeout(() => {
                 document.getElementById('success-message').style.display = 'none';
             }, 5000);
             
-            // Scroll to the bottom to see the success message
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         });
     </script>
