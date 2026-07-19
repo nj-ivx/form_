@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Patient Intake Form</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --secondary-color: #e9ecef;
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --border-color: #ccc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: var(--primary-color);
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        .required::after {
+            content: " *";
+            color: #dc3545;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        select,
+        textarea {
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-submit {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background-color: #004494;
+        }
+
+        #success-message {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>St. Jude Medical Center</h1>
+            <p>Confidential Patient Information Form</p>
+        </div>
+
+        <form id="patientForm">
+            <!-- Section 1: Personal Information -->
+            <div class="form-section">
+                <h2 class="section-title">1. Personal Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName" class="required">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName" class="required">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob" class="required">Date of Birth</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender" class="required">Gender</label>
+                        <select id="gender" name="gender" required>
+                            <option value="">Select...</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer_not_to_say">Prefer not to say</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="required">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="(123) 456-7890" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" placeholder="patient@example.com">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="address" class="required">Home Address</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Emergency Contact -->
+            <div class="form-section">
+                <h2 class="section-title">2. Emergency Contact</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="emergencyName" class="required">Contact Name</label>
+                        <input type="text" id="emergencyName" name="emergencyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="emergencyRelation" class="required">Relationship to Patient</label>
+                        <input type="text" id="emergencyRelation" name="emergencyRelation" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="emergencyPhone" class="required">Emergency Phone Number</label>
+                        <input type="tel" id="emergencyPhone" name="emergencyPhone" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Medical History -->
+            <div class="form-section">
+                <h2 class="section-title">3. Medical History</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="bloodType">Blood Type</label>
+                        <select id="bloodType" name="bloodType">
+                            <option value="">Unknown</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight (kg)</label>
+                        <input type="number" id="weight" name="weight" step="0.1">
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="allergies">Known Allergies (Medications, Food, Environmental)</label>
+                        <textarea id="allergies" name="allergies" placeholder="List any allergies here, or write 'None'"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="medications">Current Medications & Dosages</label>
+                        <textarea id="medications" name="medications" placeholder="List any medications you are currently taking"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="conditions">Chronic Conditions or Past Surgeries</label>
+                        <textarea id="conditions" name="conditions" placeholder="e.g., Diabetes, Hypertension, Appendectomy (2015)"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Insurance Details -->
+            <div class="form-section">
+                <h2 class="section-title">4. Insurance Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="insuranceProvider">Insurance Provider</label>
+                        <input type="text" id="insuranceProvider" name="insuranceProvider">
+                    </div>
+                    <div class="form-group">
+                        <label for="policyNumber">Policy / ID Number</label>
+                        <input type="text" id="policyNumber" name="policyNumber">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">Securely Submit Patient File</button>
+        </form>
+
+        <div id="success-message">
+            <strong>Success!</strong> Patient information has been securely recorded in the system.
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('patientForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevents the page from reloading
+            
+            // Here you would typically send the data to a backend server using fetch() or XMLHttpRequest
+            // For demonstration, we will just show the success message and clear the form
+            
+            document.getElementById('success-message').style.display = 'block';
+            
+            // Reset the form
+            this.reset();
+
+            // Hide the success message after 5 seconds
+            setTimeout(() => {
+                document.getElementById('success-message').style.display = 'none';
+            }, 5000);
+            
+            // Scroll to the bottom to see the success message
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
