@@ -6,11 +6,12 @@
     <title>Feras Company - Patient Intake Form</title>
     <style>
         :root {
-            --primary-color: #0056b3;
-            --secondary-color: #e9ecef;
-            --text-color: #333;
-            --bg-color: #f4f7f6;
-            --border-color: #ccc;
+            --input-focus: #2d8cf0;
+            --font-color: #323232;
+            --font-color-sub: #666;
+            --bg-color: beige;
+            --main-color: black;
+            --form-bg: lightblue;
         }
 
         * {
@@ -21,8 +22,8 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background-color: #f4f7f6;
+            color: var(--font-color);
             line-height: 1.6;
             padding: 40px 20px;
         }
@@ -30,36 +31,48 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: #fff;
+            background: var(--form-bg);
             padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            box-shadow: 8px 8px var(--main-color);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 10px;
         }
 
         .header h1 {
-            color: var(--primary-color);
-            font-size: 28px;
+            color: var(--font-color);
+            font-weight: 900;
+            font-size: 32px;
             margin-bottom: 5px;
         }
 
         .header p {
-            color: #666;
-            font-size: 14px;
+            color: var(--font-color-sub);
+            font-weight: 600;
+            font-size: 17px;
         }
 
         .form-section {
-            margin-bottom: 35px;
+            margin-bottom: 25px;
+            background: #fff; /* Adding a white background card to sections to contrast with lightblue */
+            padding: 25px;
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            box-shadow: 4px 4px var(--main-color);
         }
 
         .section-title {
-            font-size: 18px;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
+            font-size: 20px;
+            color: var(--font-color);
+            font-weight: 900;
+            border-bottom: 2px solid var(--main-color);
             padding-bottom: 8px;
             margin-bottom: 20px;
         }
@@ -80,9 +93,10 @@
         }
 
         label {
-            font-weight: 600;
-            margin-bottom: 6px;
-            font-size: 14px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            font-size: 15px;
+            color: var(--font-color);
         }
 
         .required::after {
@@ -97,52 +111,71 @@
         input[type="number"],
         select,
         textarea {
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            background-color: var(--bg-color);
+            box-shadow: 4px 4px var(--main-color);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--font-color);
+            padding: 10px 12px;
+            outline: none;
+            transition: border 0.2s ease, transform 0.1s ease;
+            font-family: inherit;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: var(--font-color-sub);
+            opacity: 0.8;
+            font-weight: 500;
         }
 
         input:focus,
         select:focus,
         textarea:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1);
+            border: 2px solid var(--input-focus);
         }
 
         textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 100px;
         }
 
         .btn-submit {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
+            margin: 20px auto 0 auto;
             width: 100%;
-            transition: background-color 0.3s ease;
+            max-width: 300px;
+            height: 50px;
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            background-color: var(--bg-color);
+            box-shadow: 4px 4px var(--main-color);
+            font-size: 18px;
+            font-weight: 900;
+            color: var(--font-color);
+            cursor: pointer;
+            transition: all 0.1s ease;
+            display: block;
         }
 
-        .btn-submit:hover {
-            background-color: #004494;
+        .btn-submit:active {
+            box-shadow: 0px 0px var(--main-color);
+            transform: translate(4px, 4px);
         }
 
         #success-message {
             display: none;
-            background-color: #d4edda;
-            color: #155724;
-            padding: 15px;
-            border-radius: 6px;
+            background-color: var(--bg-color);
+            color: var(--font-color);
+            font-weight: 900;
+            padding: 20px;
+            border-radius: 5px;
             text-align: center;
             margin-top: 20px;
-            border: 1px solid #c3e6cb;
+            border: 2px solid var(--main-color);
+            box-shadow: 4px 4px var(--main-color);
         }
 
         @media (max-width: 600px) {
@@ -151,6 +184,9 @@
             }
             .form-group.full-width {
                 grid-column: span 1;
+            }
+            .btn-submit {
+                max-width: 100%;
             }
         }
     </style>
@@ -247,16 +283,16 @@
                         <input type="number" id="weight" name="weight" step="0.1">
                     </div>
                     <div class="form-group full-width">
-                        <label for="allergies">Known Allergies (Medications, Food, Environmental)</label>
+                        <label for="allergies">Known Allergies</label>
                         <textarea id="allergies" name="allergies" placeholder="List any allergies here, or write 'None'"></textarea>
                     </div>
                     <div class="form-group full-width">
-                        <label for="medications">Current Medications & Dosages</label>
+                        <label for="medications">Current Medications</label>
                         <textarea id="medications" name="medications" placeholder="List any medications you are currently taking"></textarea>
                     </div>
                     <div class="form-group full-width">
-                        <label for="conditions">Chronic Conditions or Past Surgeries</label>
-                        <textarea id="conditions" name="conditions" placeholder="e.g., Diabetes, Hypertension, Appendectomy (2015)"></textarea>
+                        <label for="conditions">Chronic Conditions</label>
+                        <textarea id="conditions" name="conditions" placeholder="e.g., Diabetes, Hypertension"></textarea>
                     </div>
                 </div>
             </div>
@@ -276,11 +312,11 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit">Securely Submit Patient File</button>
+            <button type="submit" class="btn-submit">Submit Form →</button>
         </form>
 
         <div id="success-message">
-            <strong>Success!</strong> Patient information has been securely recorded in the system.
+            Success! Patient information has been securely recorded.
         </div>
     </div>
 
