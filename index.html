@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feras Company - Patient Intake Form</title>
     <style>
+        /* Light Mode Variables (Default) */
         :root {
             --input-focus: #2d8cf0;
             --font-color: #323232;
@@ -12,6 +13,22 @@
             --bg-color: beige;
             --main-color: black;
             --form-bg: lightblue;
+            --body-bg: #f4f7f6;
+            --section-bg: #fff;
+            --danger-color: #dc3545;
+        }
+
+        /* Dark Mode Variables */
+        body.dark-mode {
+            --input-focus: #ffde59;
+            --font-color: #f0f0f0;
+            --font-color-sub: #bbb;
+            --bg-color: #2a2a2a;
+            --main-color: #e0e0e0;
+            --form-bg: #1a3a5a;
+            --body-bg: #121212;
+            --section-bg: #222;
+            --danger-color: #ff6b6b;
         }
 
         * {
@@ -22,10 +39,11 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
+            background-color: var(--body-bg);
             color: var(--font-color);
             line-height: 1.6;
             padding: 40px 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .container {
@@ -39,6 +57,31 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: -10px;
+        }
+
+        .btn-toggle {
+            padding: 8px 16px;
+            border-radius: 5px;
+            border: 2px solid var(--main-color);
+            background-color: var(--bg-color);
+            box-shadow: 4px 4px var(--main-color);
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--font-color);
+            cursor: pointer;
+            transition: all 0.1s ease;
+        }
+
+        .btn-toggle:active {
+            box-shadow: 0px 0px var(--main-color);
+            transform: translate(4px, 4px);
         }
 
         .header {
@@ -61,11 +104,12 @@
 
         .form-section {
             margin-bottom: 25px;
-            background: #fff; /* Adding a white background card to sections to contrast with lightblue */
+            background: var(--section-bg);
             padding: 25px;
             border-radius: 5px;
             border: 2px solid var(--main-color);
             box-shadow: 4px 4px var(--main-color);
+            transition: all 0.3s ease;
         }
 
         .section-title {
@@ -101,7 +145,7 @@
 
         .required::after {
             content: " *";
-            color: #dc3545;
+            color: var(--danger-color);
         }
 
         input[type="text"],
@@ -121,7 +165,7 @@
             color: var(--font-color);
             padding: 10px 12px;
             outline: none;
-            transition: border 0.2s ease, transform 0.1s ease;
+            transition: border 0.2s ease, transform 0.1s ease, background-color 0.3s ease;
             font-family: inherit;
         }
 
@@ -194,6 +238,12 @@
 <body>
 
     <div class="container">
+        
+        <!-- Theme Toggle Button -->
+        <div class="top-bar">
+            <button type="button" id="themeToggle" class="btn-toggle">🌙 Dark Mode</button>
+        </div>
+
         <div class="header">
             <h1>Feras Company</h1>
             <p>Confidential Patient Information Form</p>
@@ -321,6 +371,30 @@
     </div>
 
     <script>
+        // --- Dark/Light Mode Logic ---
+        const themeToggle = document.getElementById('themeToggle');
+        const body = document.body;
+
+        // Check LocalStorage to see if the user previously chose Dark Mode
+        if (localStorage.getItem('theme') === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.innerText = '☀️ Light Mode';
+        }
+
+        // Listen for clicks on the toggle button
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                themeToggle.innerText = '☀️ Light Mode';
+            } else {
+                localStorage.setItem('theme', 'light');
+                themeToggle.innerText = '🌙 Dark Mode';
+            }
+        });
+
+        // --- Form Submission Logic ---
         document.getElementById('patientForm').addEventListener('submit', function(e) {
             e.preventDefault(); 
             
