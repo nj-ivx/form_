@@ -3,383 +3,291 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feras Company - Patient Intake Form</title>
+    <title>Feras Company | Medical Portal</title>
     <style>
-        /* Light Mode Variables (Default) */
+        /* Modern Enterprise CSS Variables */
         :root {
-            --input-focus: #2d8cf0;
-            --font-color: #323232;
-            --font-color-sub: #666;
-            --bg-color: beige;
-            --main-color: black;
-            --form-bg: lightblue;
-            --body-bg: #f4f7f6;
-            --section-bg: #fff;
-            --danger-color: #dc3545;
+            --bg-main: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-nav: rgba(255, 255, 255, 0.8);
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --brand-color: #2563eb;
+            --brand-hover: #1d4ed8;
+            --border-color: #e2e8f0;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --transition-speed: 0.3s;
         }
 
         /* Dark Mode Variables */
         body.dark-mode {
-            --input-focus: #ffde59;
-            --font-color: #f0f0f0;
-            --font-color-sub: #bbb;
-            --bg-color: #2a2a2a;
-            --main-color: #e0e0e0;
-            --form-bg: #1a3a5a;
-            --body-bg: #121212;
-            --section-bg: #222;
-            --danger-color: #ff6b6b;
+            --bg-main: #0f172a;
+            --bg-surface: #1e293b;
+            --bg-nav: rgba(30, 41, 59, 0.8);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --brand-color: #3b82f6;
+            --brand-hover: #60a5fa;
+            --border-color: #334155;
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--body-bg);
-            color: var(--font-color);
-            line-height: 1.6;
-            padding: 40px 20px;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: var(--form-bg);
-            padding: 40px;
-            border-radius: 5px;
-            border: 2px solid var(--main-color);
-            box-shadow: 8px 8px var(--main-color);
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            transition: all 0.3s ease;
+            transition: background-color var(--transition-speed), color var(--transition-speed);
         }
 
-        .top-bar {
+        /* Glassmorphism Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--bg-nav);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+            padding: 15px 5%;
             display: flex;
-            justify-content: flex-end;
-            margin-bottom: -10px;
+            justify-content: space-between;
+            align-items: center;
+            transition: background var(--transition-speed), border-color var(--transition-speed);
         }
 
-        .btn-toggle {
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            color: var(--brand-color);
+            font-size: 26px;
+        }
+
+        /* Sleek Theme Toggle */
+        .theme-switch {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
             padding: 8px 16px;
-            border-radius: 5px;
-            border: 2px solid var(--main-color);
-            background-color: var(--bg-color);
-            box-shadow: 4px 4px var(--main-color);
+            border-radius: 20px;
             font-size: 14px;
-            font-weight: 900;
-            color: var(--font-color);
-            cursor: pointer;
-            transition: all 0.1s ease;
-        }
-
-        .btn-toggle:active {
-            box-shadow: 0px 0px var(--main-color);
-            transform: translate(4px, 4px);
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
-
-        .header h1 {
-            color: var(--font-color);
-            font-weight: 900;
-            font-size: 32px;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            color: var(--font-color-sub);
             font-weight: 600;
-            font-size: 17px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-speed);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
 
-        .form-section {
-            margin-bottom: 25px;
-            background: var(--section-bg);
-            padding: 25px;
-            border-radius: 5px;
-            border: 2px solid var(--main-color);
-            box-shadow: 4px 4px var(--main-color);
-            transition: all 0.3s ease;
+        .theme-switch:hover {
+            border-color: var(--brand-color);
+            color: var(--brand-color);
         }
 
-        .section-title {
-            font-size: 20px;
-            color: var(--font-color);
+        /* Main Content Layout */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 20px 60px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .hero-badge {
+            background-color: rgba(37, 99, 235, 0.1);
+            color: var(--brand-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 48px;
             font-weight: 900;
-            border-bottom: 2px solid var(--main-color);
-            padding-bottom: 8px;
+            line-height: 1.1;
             margin-bottom: 20px;
+            letter-spacing: -1px;
         }
 
-        .form-grid {
+        .subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            line-height: 1.6;
+            margin-bottom: 50px;
+        }
+
+        /* Professional Action Cards */
+        .card-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            width: 100%;
         }
 
-        .form-group {
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px 30px;
+            text-decoration: none;
+            color: inherit;
+            text-align: left;
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
             display: flex;
             flex-direction: column;
         }
 
-        .form-group.full-width {
-            grid-column: span 2;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
+            border-color: var(--brand-color);
         }
 
-        label {
-            font-weight: 900;
-            margin-bottom: 8px;
-            font-size: 15px;
-            color: var(--font-color);
-        }
-
-        .required::after {
-            content: " *";
-            color: var(--danger-color);
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        input[type="date"],
-        input[type="number"],
-        select,
-        textarea {
+        /* Subtle top highlight on cards */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            border-radius: 5px;
-            border: 2px solid var(--main-color);
-            background-color: var(--bg-color);
-            box-shadow: 4px 4px var(--main-color);
+            height: 4px;
+            background: var(--brand-color);
+            opacity: 0;
+            transition: opacity var(--transition-speed);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 20px;
+            background: var(--bg-main);
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        .card h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .card-link {
             font-size: 15px;
             font-weight: 600;
-            color: var(--font-color);
-            padding: 10px 12px;
-            outline: none;
-            transition: border 0.2s ease, transform 0.1s ease, background-color 0.3s ease;
-            font-family: inherit;
+            color: var(--brand-color);
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        input::placeholder,
-        textarea::placeholder {
-            color: var(--font-color-sub);
-            opacity: 0.8;
-            font-weight: 500;
+        .card-link span {
+            transition: transform 0.2s ease;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
-            border: 2px solid var(--input-focus);
+        .card:hover .card-link span {
+            transform: translateX(4px);
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .btn-submit {
-            margin: 20px auto 0 auto;
-            width: 100%;
-            max-width: 300px;
-            height: 50px;
-            border-radius: 5px;
-            border: 2px solid var(--main-color);
-            background-color: var(--bg-color);
-            box-shadow: 4px 4px var(--main-color);
-            font-size: 18px;
-            font-weight: 900;
-            color: var(--font-color);
-            cursor: pointer;
-            transition: all 0.1s ease;
-            display: block;
-        }
-
-        .btn-submit:active {
-            box-shadow: 0px 0px var(--main-color);
-            transform: translate(4px, 4px);
-        }
-
-        #success-message {
-            display: none;
-            background-color: var(--bg-color);
-            color: var(--font-color);
-            font-weight: 900;
-            padding: 20px;
-            border-radius: 5px;
-            text-align: center;
-            margin-top: 20px;
-            border: 2px solid var(--main-color);
-            box-shadow: 4px 4px var(--main-color);
-        }
-
-        @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-            .form-group.full-width {
-                grid-column: span 1;
-            }
-            .btn-submit {
-                max-width: 100%;
-            }
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            h1 { font-size: 36px; }
+            .subtitle { font-size: 16px; }
+            .card-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        
-        <!-- Theme Toggle Button -->
-        <div class="top-bar">
-            <button type="button" id="themeToggle" class="btn-toggle">🌙 Dark Mode</button>
+    <nav>
+        <div class="logo">
+            <span class="logo-icon">✦</span> Feras Company
         </div>
+        <button type="button" id="themeToggle" class="theme-switch">
+            <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+        </button>
+    </nav>
 
-        <div class="header">
-            <h1>Feras Company</h1>
-            <p>Confidential Patient Information Form</p>
+    <main>
+        <div class="hero-badge">Medical Administration Portal</div>
+        <h1>Streamlined Patient Data Management</h1>
+        <p class="subtitle">Securely register new patients, update medical histories, and manage administrative records through our unified enterprise portal.</p>
+
+        <div class="card-grid">
+            <!-- Link to the Patient Form -->
+            <a href="form.html" class="card">
+                <div class="card-icon">📋</div>
+                <h2>Patient Registration</h2>
+                <p>Access the encrypted intake form to register new patients, record medical histories, and process insurance details.</p>
+                <div class="card-link">Open Form <span>→</span></div>
+            </a>
+
+            <!-- Link to the Formspree Admin Database -->
+            <a href="https://formspree.io/forms/xwvgbbrj/submissions" target="_blank" class="card">
+                <div class="card-icon">🗄️</div>
+                <h2>Admin Database</h2>
+                <p>Access the central repository to view, manage, and export patient submission records securely via Formspree.</p>
+                <div class="card-link">Access Dashboard <span>→</span></div>
+            </a>
         </div>
-
-        <!-- The action attribute now contains your custom Formspree link -->
-        <form id="patientForm" action="https://formspree.io/f/xwvgbbrj" method="POST">
-            
-            <!-- Section 1: Personal Information -->
-            <div class="form-section">
-                <h2 class="section-title">1. Personal Information</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="firstName" class="required">First Name</label>
-                        <input type="text" id="firstName" name="firstName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastName" class="required">Last Name</label>
-                        <input type="text" id="lastName" name="lastName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="dob" class="required">Date of Birth</label>
-                        <input type="date" id="dob" name="dob" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="gender" class="required">Gender</label>
-                        <select id="gender" name="gender" required>
-                            <option value="">Select...</option>
-                            <option value="male">Male</option>
-                            <option value="female">Female</option>
-                            <option value="other">Other</option>
-                            <option value="prefer_not_to_say">Prefer not to say</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="phone" class="required">Phone Number</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+966 5X XXX XXXX" pattern="^(?:\+966|0)?5[0-9]{8}$" title="Please enter a valid Saudi phone number starting with +9665 or 05" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address</label>
-                        <input type="email" id="email" name="email" placeholder="patient@example.com">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="address" class="required">Home Address</label>
-                        <input type="text" id="address" name="address" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 2: Emergency Contact -->
-            <div class="form-section">
-                <h2 class="section-title">2. Emergency Contact</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="emergencyName" class="required">Contact Name</label>
-                        <input type="text" id="emergencyName" name="emergencyName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="emergencyRelation" class="required">Relationship to Patient</label>
-                        <input type="text" id="emergencyRelation" name="emergencyRelation" required>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="emergencyPhone" class="required">Emergency Phone Number</label>
-                        <input type="tel" id="emergencyPhone" name="emergencyPhone" placeholder="+966 5X XXX XXXX" pattern="^(?:\+966|0)?5[0-9]{8}$" title="Please enter a valid Saudi phone number starting with +9665 or 05" required>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 3: Medical History -->
-            <div class="form-section">
-                <h2 class="section-title">3. Medical History</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="bloodType">Blood Type</label>
-                        <select id="bloodType" name="bloodType">
-                            <option value="">Unknown</option>
-                            <option value="A+">A+</option>
-                            <option value="A-">A-</option>
-                            <option value="B+">B+</option>
-                            <option value="B-">B-</option>
-                            <option value="AB+">AB+</option>
-                            <option value="AB-">AB-</option>
-                            <option value="O+">O+</option>
-                            <option value="O-">O-</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="weight">Weight (kg)</label>
-                        <input type="number" id="weight" name="weight" step="0.1">
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="allergies">Known Allergies</label>
-                        <textarea id="allergies" name="allergies" placeholder="List any allergies here, or write 'None'"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="medications">Current Medications</label>
-                        <textarea id="medications" name="medications" placeholder="List any medications you are currently taking"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label for="conditions">Chronic Conditions</label>
-                        <textarea id="conditions" name="conditions" placeholder="e.g., Diabetes, Hypertension"></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Section 4: Insurance Details -->
-            <div class="form-section">
-                <h2 class="section-title">4. Insurance Information</h2>
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label for="insuranceProvider">Insurance Provider</label>
-                        <input type="text" id="insuranceProvider" name="insuranceProvider">
-                    </div>
-                    <div class="form-group">
-                        <label for="policyNumber">Policy / ID Number</label>
-                        <input type="text" id="policyNumber" name="policyNumber">
-                    </div>
-                </div>
-            </div>
-
-            <button type="submit" class="btn-submit">Submit Form →</button>
-        </form>
-
-        <div id="success-message">
-            Success! Patient information has been securely recorded.
-        </div>
-    </div>
+    </main>
 
     <script>
-        // --- Dark/Light Mode Logic ---
+        // --- Advanced Dark/Light Mode Logic ---
         const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeText = document.getElementById('themeText');
         const body = document.body;
 
+        // Check LocalStorage to sync theme across pages
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-mode');
-            themeToggle.innerText = '☀️ Light Mode';
+            themeIcon.innerText = '☀️';
+            themeText.innerText = 'Light';
         }
 
         themeToggle.addEventListener('click', () => {
@@ -387,47 +295,13 @@
             
             if (body.classList.contains('dark-mode')) {
                 localStorage.setItem('theme', 'dark');
-                themeToggle.innerText = '☀️ Light Mode';
+                themeIcon.innerText = '☀️';
+                themeText.innerText = 'Light';
             } else {
                 localStorage.setItem('theme', 'light');
-                themeToggle.innerText = '🌙 Dark Mode';
+                themeIcon.innerText = '🌙';
+                themeText.innerText = 'Dark';
             }
-        });
-
-        // --- Admin Form Submission Logic (Formspree) ---
-        document.getElementById('patientForm').addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            
-            const form = e.target;
-            const data = new FormData(form);
-            
-            // Send the data securely to your Formspree Admin Dashboard
-            fetch(form.action, {
-                method: form.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }).then(response => {
-                if (response.ok) {
-                    // Show success message
-                    document.getElementById('success-message').style.display = 'block';
-                    
-                    // Clear the form
-                    form.reset();
-
-                    // Hide message after 5 seconds
-                    setTimeout(() => {
-                        document.getElementById('success-message').style.display = 'none';
-                    }, 5000);
-                    
-                    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-                } else {
-                    alert("Oops! There was a problem submitting your form.");
-                }
-            }).catch(error => {
-                alert("Oops! There was a problem submitting your form.");
-            });
         });
     </script>
 </body>
