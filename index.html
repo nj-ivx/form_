@@ -74,11 +74,6 @@
             gap: 10px;
         }
 
-        .logo-icon {
-            color: var(--brand-color);
-            font-size: 26px;
-        }
-
         /* Sleek Theme Toggle */
         .theme-switch {
             background: var(--bg-surface);
@@ -107,11 +102,12 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            padding: 120px 20px 60px;
+            justify-content: flex-start;
+            padding: 120px 20px 40px;
             text-align: center;
             max-width: 1000px;
             margin: 0 auto;
+            width: 100%;
         }
 
         .hero-badge {
@@ -144,13 +140,18 @@
 
         /* Professional Action Cards */
         .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 30px;
             width: 100%;
+            margin-bottom: 50px;
         }
 
         .card {
+            flex: 1;
+            min-width: 320px;
+            max-width: 450px;
             background: var(--bg-surface);
             border: 1px solid var(--border-color);
             border-radius: 16px;
@@ -158,7 +159,7 @@
             text-decoration: none;
             color: inherit;
             text-align: left;
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+            transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed), opacity 0.4s ease;
             box-shadow: var(--card-shadow);
             position: relative;
             overflow: hidden;
@@ -172,7 +173,6 @@
             border-color: var(--brand-color);
         }
 
-        /* Subtle top highlight on cards */
         .card::before {
             content: '';
             position: absolute;
@@ -233,11 +233,69 @@
             transform: translateX(4px);
         }
 
-        /* Responsive Adjustments */
+        /* Hidden by default until logged in */
+        #adminCard {
+            display: none;
+        }
+
+        /* Overview Section */
+        .overview-section {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 50px 40px;
+            text-align: left;
+            box-shadow: var(--card-shadow);
+            width: 100%;
+            transition: background var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .overview-section h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            color: var(--text-primary);
+        }
+
+        .overview-section p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .overview-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Footer / Admin Login Trigger */
+        footer {
+            padding: 30px;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .admin-trigger {
+            color: var(--text-secondary);
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .admin-trigger:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+
         @media (max-width: 768px) {
             h1 { font-size: 36px; }
             .subtitle { font-size: 16px; }
-            .card-grid { grid-template-columns: 1fr; }
+            .card { min-width: 100%; }
+            .overview-section { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -245,7 +303,7 @@
 
     <nav>
         <div class="logo">
-            <span class="logo-icon">✦</span> Feras Company
+            Feras Company
         </div>
         <button type="button" id="themeToggle" class="theme-switch">
             <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
@@ -258,7 +316,7 @@
         <p class="subtitle">Securely register new patients, update medical histories, and manage administrative records through our unified enterprise portal.</p>
 
         <div class="card-grid">
-            <!-- Link to the Patient Form -->
+            <!-- Patient Registration Card (Always Visible) -->
             <a href="form.html" class="card">
                 <div class="card-icon">📋</div>
                 <h2>Patient Registration</h2>
@@ -266,24 +324,69 @@
                 <div class="card-link">Open Form <span>→</span></div>
             </a>
 
-            <!-- Link to the Formspree Admin Database -->
-            <a href="https://formspree.io/forms/xwvgbbrj/submissions" target="_blank" class="card">
+            <!-- Admin Database Card (Hidden by Default) -->
+            <a href="https://formspree.io/forms/xwvgbbrj/submissions" target="_blank" class="card" id="adminCard">
                 <div class="card-icon">🗄️</div>
                 <h2>Admin Database</h2>
                 <p>Access the central repository to view, manage, and export patient submission records securely via Formspree.</p>
                 <div class="card-link">Access Dashboard <span>→</span></div>
             </a>
         </div>
+
+        <!-- Company Overview Section -->
+        <div class="overview-section">
+            <h2>About Feras Company</h2>
+            <p>Feras Company is a premier healthcare administration provider dedicated to modernizing the patient experience. By bridging the gap between advanced medical technology and seamless administrative operations, we ensure that both patients and healthcare professionals have a secure, efficient, and reliable digital platform.</p>
+            <p>Our commitment to operational excellence and stringent data security allows medical staff to focus entirely on what matters most: delivering exceptional care. Through transparent workflows and innovative infrastructure, Feras Company stands at the forefront of modern health administration.</p>
+        </div>
     </main>
 
+    <footer>
+        <button id="adminLoginBtn" class="admin-trigger">🔒 Admin Access</button>
+    </footer>
+
     <script>
+        // --- Admin Login Logic ---
+        const ADMIN_PASSWORD = "feras-admin";
+        
+        const adminCard = document.getElementById('adminCard');
+        const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+        // Check if admin is already logged in
+        function checkAdminStatus() {
+            if (localStorage.getItem('isAdmin') === 'true') {
+                adminCard.style.display = 'flex';
+                adminLoginBtn.innerText = '🔓 Logout Admin';
+            } else {
+                adminCard.style.display = 'none';
+                adminLoginBtn.innerText = '🔒 Admin Access';
+            }
+        }
+
+        adminLoginBtn.addEventListener('click', () => {
+            if (localStorage.getItem('isAdmin') === 'true') {
+                localStorage.removeItem('isAdmin');
+                checkAdminStatus();
+            } else {
+                const passwordInput = prompt("Please enter the administrator password:");
+                if (passwordInput === ADMIN_PASSWORD) {
+                    localStorage.setItem('isAdmin', 'true');
+                    checkAdminStatus();
+                } else if (passwordInput !== null) {
+                    alert("Access Denied: Incorrect password.");
+                }
+            }
+        });
+
+        // Run this check as soon as the page loads
+        checkAdminStatus();
+
         // --- Advanced Dark/Light Mode Logic ---
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const themeText = document.getElementById('themeText');
         const body = document.body;
 
-        // Check LocalStorage to sync theme across pages
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-mode');
             themeIcon.innerText = '☀️';
