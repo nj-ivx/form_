@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feras Company | Medical Portal</title>
+    
+    <!-- 1. Supabase JS SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- 2. Your Shared Supabase Client -->
+    <script src="supabaseClient.js"></script>
+    
     <style>
-        /* Modern Enterprise CSS Variables */
         :root {
             --bg-main: #f8fafc;
             --bg-surface: #ffffff;
@@ -13,13 +18,11 @@
             --text-primary: #0f172a;
             --text-secondary: #64748b;
             --brand-color: #2563eb;
-            --brand-hover: #1d4ed8;
             --border-color: #e2e8f0;
-            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             --transition-speed: 0.3s;
         }
 
-        /* Dark Mode Variables */
         body.dark-mode {
             --bg-main: #0f172a;
             --bg-surface: #1e293b;
@@ -27,384 +30,134 @@
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --brand-color: #3b82f6;
-            --brand-hover: #60a5fa;
             --border-color: #334155;
             --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        
         body {
             background-color: var(--bg-main);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            transition: background-color var(--transition-speed), color var(--transition-speed);
+            transition: all var(--transition-speed);
         }
 
-        /* Glassmorphism Navigation Bar */
         nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
+            position: fixed; top: 0; width: 100%;
             background: var(--bg-nav);
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border-color);
-            z-index: 1000;
-            padding: 15px 5%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background var(--transition-speed), border-color var(--transition-speed);
+            z-index: 1000; padding: 15px 5%;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .logo {
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Sleek Theme Toggle */
+        .logo { font-size: 22px; font-weight: 800; }
         .theme-switch {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all var(--transition-speed);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+            background: var(--bg-surface); border: 1px solid var(--border-color);
+            color: var(--text-primary); padding: 8px 16px; border-radius: 20px;
+            font-size: 14px; font-weight: 600; cursor: pointer; display: flex; gap: 8px;
         }
 
-        .theme-switch:hover {
-            border-color: var(--brand-color);
-            color: var(--brand-color);
-        }
+        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 120px 20px 40px; text-align: center; max-width: 1000px; margin: 0 auto; width: 100%; }
+        
+        .hero-badge { background-color: rgba(37, 99, 235, 0.1); color: var(--brand-color); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; }
+        h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; }
+        .subtitle { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin-bottom: 50px; line-height: 1.6;}
+        
+        .card-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; width: 100%; margin-bottom: 50px; }
+        .card { flex: 1; min-width: 320px; max-width: 450px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px 30px; text-decoration: none; color: inherit; text-align: left; box-shadow: var(--card-shadow); transition: transform 0.3s; position: relative; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-5px); border-color: var(--brand-color); }
+        .card-icon { font-size: 32px; margin-bottom: 20px; background: var(--bg-main); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); }
+        .card h2 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+        .card p { color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; flex-grow: 1; }
+        .card-link { font-size: 15px; font-weight: 600; color: var(--brand-color); }
 
-        /* Main Content Layout */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 120px 20px 40px;
-            text-align: center;
-            max-width: 1000px;
-            margin: 0 auto;
-            width: 100%;
-        }
+        .overview-section { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 50px 40px; text-align: left; box-shadow: var(--card-shadow); width: 100%; }
+        .overview-section h2 { font-size: 28px; margin-bottom: 20px; }
+        .overview-section p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 15px; }
 
-        .hero-badge {
-            background-color: rgba(37, 99, 235, 0.1);
-            color: var(--brand-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        h1 {
-            font-size: 48px;
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            letter-spacing: -1px;
-        }
-
-        .subtitle {
-            font-size: 18px;
-            color: var(--text-secondary);
-            max-width: 600px;
-            line-height: 1.6;
-            margin-bottom: 50px;
-        }
-
-        /* Professional Action Cards */
-        .card-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 30px;
-            width: 100%;
-            margin-bottom: 50px;
-        }
-
-        .card {
-            flex: 1;
-            min-width: 320px;
-            max-width: 450px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 40px 30px;
-            text-decoration: none;
-            color: inherit;
-            text-align: left;
-            transition: transform var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed), opacity 0.4s ease;
-            box-shadow: var(--card-shadow);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.1);
-            border-color: var(--brand-color);
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--brand-color);
-            opacity: 0;
-            transition: opacity var(--transition-speed);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 32px;
-            margin-bottom: 20px;
-            background: var(--bg-main);
-            width: 64px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
-        .card h2 {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 24px;
-            flex-grow: 1;
-        }
-
-        .card-link {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--brand-color);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .card-link span {
-            transition: transform 0.2s ease;
-        }
-
-        .card:hover .card-link span {
-            transform: translateX(4px);
-        }
-
-        /* Hidden by default until logged in */
-        #adminCard {
-            display: none;
-        }
-
-        /* Overview Section */
-        .overview-section {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 50px 40px;
-            text-align: left;
-            box-shadow: var(--card-shadow);
-            width: 100%;
-            transition: background var(--transition-speed), border-color var(--transition-speed);
-        }
-
-        .overview-section h2 {
-            font-size: 28px;
-            font-weight: 800;
-            margin-bottom: 20px;
-            color: var(--text-primary);
-        }
-
-        .overview-section p {
-            color: var(--text-secondary);
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .overview-section p:last-child {
-            margin-bottom: 0;
-        }
-
-        /* Footer / Admin Login Trigger */
-        footer {
-            padding: 30px;
-            text-align: center;
-            margin-top: auto;
-        }
-
-        .admin-trigger {
-            color: var(--text-secondary);
-            font-size: 13px;
-            text-decoration: none;
-            cursor: pointer;
-            transition: color 0.2s ease;
-            background: none;
-            border: none;
-            font-family: inherit;
-        }
-
-        .admin-trigger:hover {
-            color: var(--text-primary);
-            text-decoration: underline;
-        }
-
-        @media (max-width: 768px) {
-            h1 { font-size: 36px; }
-            .subtitle { font-size: 16px; }
-            .card { min-width: 100%; }
-            .overview-section { padding: 30px 20px; }
-        }
+        footer { padding: 30px; text-align: center; margin-top: auto; }
+        .logout-btn { color: var(--danger-color); font-size: 13px; font-weight: 700; background: none; border: none; cursor: pointer; }
+        .logout-btn:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">
-            Feras Company
-        </div>
+        <div class="logo">Feras Company</div>
         <button type="button" id="themeToggle" class="theme-switch">
             <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
         </button>
     </nav>
 
-    <main>
+    <main id="main-content" style="display: none;"> <!-- Hidden until auth is verified -->
         <div class="hero-badge">Medical Administration Portal</div>
         <h1>Streamlined Patient Data Management</h1>
         <p class="subtitle">Securely register new patients, update medical histories, and manage administrative records through our unified enterprise portal.</p>
 
         <div class="card-grid">
-            <!-- Patient Registration Card (Always Visible) -->
             <a href="form.html" class="card">
                 <div class="card-icon">📋</div>
                 <h2>Patient Registration</h2>
                 <p>Access the encrypted intake form to register new patients, record medical histories, and process insurance details.</p>
                 <div class="card-link">Open Form <span>→</span></div>
             </a>
-
-            <!-- Admin Database Card (Hidden by Default) -->
-            <a href="https://formspree.io/forms/xwvgbbrj/submissions" target="_blank" class="card" id="adminCard">
+            
+            <a href="https://supabase.com/dashboard" target="_blank" class="card">
                 <div class="card-icon">🗄️</div>
                 <h2>Admin Database</h2>
-                <p>Access the central repository to view, manage, and export patient submission records securely via Formspree.</p>
+                <p>Access your Supabase dashboard to view and manage all securely submitted patient records.</p>
                 <div class="card-link">Access Dashboard <span>→</span></div>
             </a>
         </div>
 
-        <!-- Company Overview Section -->
         <div class="overview-section">
             <h2>About Feras Company</h2>
             <p>Feras Company is a premier healthcare administration provider dedicated to modernizing the patient experience. By bridging the gap between advanced medical technology and seamless administrative operations, we ensure that both patients and healthcare professionals have a secure, efficient, and reliable digital platform.</p>
-            <p>Our commitment to operational excellence and stringent data security allows medical staff to focus entirely on what matters most: delivering exceptional care. Through transparent workflows and innovative infrastructure, Feras Company stands at the forefront of modern health administration.</p>
         </div>
     </main>
 
     <footer>
-        <button id="adminLoginBtn" class="admin-trigger">🔒 Admin Access</button>
+        <button id="logoutBtn" class="logout-btn">🔒 Secure Logout</button>
     </footer>
 
     <script>
-        // --- Admin Login Logic ---
-        const ADMIN_PASSWORD = "feras-admin";
-        
-        const adminCard = document.getElementById('adminCard');
-        const adminLoginBtn = document.getElementById('adminLoginBtn');
-
-        // Check if admin is already logged in
-        function checkAdminStatus() {
-            if (localStorage.getItem('isAdmin') === 'true') {
-                adminCard.style.display = 'flex';
-                adminLoginBtn.innerText = '🔓 Logout Admin';
+        // 1. SUPABASE AUTH GUARD
+        async function checkAuth() {
+            const { data: { session } } = await window.supabaseApp.auth.getSession();
+            if (!session) {
+                window.location.href = 'auth.html'; // Kick out unauthorized users
             } else {
-                adminCard.style.display = 'none';
-                adminLoginBtn.innerText = '🔒 Admin Access';
+                document.getElementById('main-content').style.display = 'flex'; // Reveal page
             }
         }
+        checkAuth();
 
-        adminLoginBtn.addEventListener('click', () => {
-            if (localStorage.getItem('isAdmin') === 'true') {
-                localStorage.removeItem('isAdmin');
-                checkAdminStatus();
-            } else {
-                const passwordInput = prompt("Please enter the administrator password:");
-                if (passwordInput === ADMIN_PASSWORD) {
-                    localStorage.setItem('isAdmin', 'true');
-                    checkAdminStatus();
-                } else if (passwordInput !== null) {
-                    alert("Access Denied: Incorrect password.");
-                }
-            }
+        // 2. LOGOUT FUNCTIONALITY
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await window.supabaseApp.auth.signOut();
+            window.location.href = 'auth.html';
         });
 
-        // Run this check as soon as the page loads
-        checkAdminStatus();
-
-        // --- Advanced Dark/Light Mode Logic ---
+        // 3. DARK MODE LOGIC
         const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = document.getElementById('themeIcon');
-        const themeText = document.getElementById('themeText');
         const body = document.body;
-
+        
         if (localStorage.getItem('theme') === 'dark') {
             body.classList.add('dark-mode');
-            themeIcon.innerText = '☀️';
-            themeText.innerText = 'Light';
+            document.getElementById('themeIcon').innerText = '☀️';
+            document.getElementById('themeText').innerText = 'Light';
         }
 
         themeToggle.addEventListener('click', () => {
             body.classList.toggle('dark-mode');
-            
-            if (body.classList.contains('dark-mode')) {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.innerText = '☀️';
-                themeText.innerText = 'Light';
-            } else {
-                localStorage.setItem('theme', 'light');
-                themeIcon.innerText = '🌙';
-                themeText.innerText = 'Dark';
-            }
+            const isDark = body.classList.contains('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
+            document.getElementById('themeText').innerText = isDark ? 'Light' : 'Dark';
         });
     </script>
     
