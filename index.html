@@ -166,73 +166,70 @@
     </footer>
 
     <script>
-        async function checkAuthAndSetRole() {
-            const { data: { session } } = await window.supabaseApp.auth.getSession();
-            
-            if (!session) {
-                window.location.href = 'auth.html';
-                return;
+                  async function checkAuthAndSetRole() {
+            try {
+                // Check if Supabase connected properly
+                if (!window.supabaseApp) {
+                    throw new Error("supabaseClient.js failed to load. Please check the file name and your API keys.");
+                }
+
+                const { data: { session }, error: authError } = await window.supabaseApp.auth.getSession();
+                
+                if (authError) throw authError;
+
+                // If not logged in, redirect to auth.html
+                if (!session) {
+                    window.location.href = 'auth.html';
+                    return;
+                }
+
+                const userEmail = session.user.email;
+                const userId = session.user.id;
+                
+                document.getElementById('nav-email').innerText = userEmail;
+
+                // Check database for role
+                const { data: roleData, error: dbError } = await window.supabaseApp
+                    .from('user_roles')
+                    .select('role')
+                    .eq('user_id', userId)
+                    .single();
+
+                if (dbError) throw dbError;
+
+                const isAdmin = roleData && roleData.role === 'admin';
+                const badge = document.getElementById('dynamic-badge');
+                
+                if (isAdmin) {
+                    document.getElementById('admin-panel').style.display = 'block';
+                    document.getElementById('user-panel').style.display = 'none';
+                    badge.className = 'role-badge admin';
+                    badge.innerText = 'System Administrator';
+                    document.getElementById('greeting').innerText = 'Welcome back, Director.';
+                } else {
+                    document.getElementById('admin-panel').style.display = 'none';
+                    document.getElementById('user-panel').style.display = 'block';
+                    badge.className = 'role-badge user';
+                    badge.innerText = 'Standard Patient';
+                    document.getElementById('greeting').innerText = 'Welcome to your portal.';
+                }
+
+                // Show the page once everything is verified
+                document.getElementById('main-content').style.display = 'flex';
+
+            } catch (error) {
+                // If anything fails, print the exact error to the screen
+                document.body.innerHTML = `
+                    <div style="padding: 50px; text-align: center; margin-top: 100px; font-family: sans-serif;">
+                        <h1 style="color: #ef4444;">System Error Detected</h1>
+                        <p style="font-size: 18px; color: #333; margin-top: 20px;"><b>Error Details:</b> ${error.message}</p>
+                    </div>
+                `;
             }
-
-            const userEmail = session.user.email;
-            const userId = session.user.id;
-            
-            document.getElementById('nav-email').innerText = userEmail;
-
-            // Check database for role
-            const { data: roleData, error } = await window.supabaseApp
-                .from('user_roles')
-                .select('role')
-                .eq('user_id', userId)
-                .single();
-
-            const isAdmin = roleData && roleData.role === 'admin';
-            const badge = document.getElementById('dynamic-badge');
-            
-            if (isAdmin) {
-                document.getElementById('admin-panel').style.display = 'block';
-                document.getElementById('user-panel').style.display = 'none';
-                badge.className = 'role-badge admin';
-                badge.innerText = 'System Administrator';
-                document.getElementById('greeting').innerText = 'Welcome back, Director.';
-            } else {
-                document.getElementById('admin-panel').style.display = 'none';
-                document.getElementById('user-panel').style.display = 'block';
-                badge.className = 'role-badge user';
-                badge.innerText = 'Standard Patient';
-                document.getElementById('greeting').innerText = 'Welcome to your portal.';
-            }
-
-            document.getElementById('main-content').style.display = 'flex';
         }
-        
-        checkAuthAndSetRole();
-
-        document.getElementById('logoutBtn').addEventListener('click', async () => {
-            await window.supabaseApp.auth.signOut();
-            window.location.href = 'auth.html';
-        });
-
-        const themeToggle = document.getElementById('themeToggle');
-        const body = document.body;
-        
-        if (localStorage.getItem('theme') === 'dark') {
-            body.classList.add('dark-mode');
-            document.getElementById('themeIcon').innerText = '☀️';
-            document.getElementById('themeText').innerText = 'Light';
-        }
-
-        themeToggle.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            document.getElementById('themeIcon').innerText = isDark ? '☀️' : '🌙';
-            document.getElementById('themeText').innerText = isDark ? 'Light' : 'Dark';
-        });
     </script>
     
     <!-- Chatbase AI Integration -->
-    <script>
     (function(){if(!window.chatbase||window.chatbase("getState")!=="initialized"){window.chatbase=(...arguments)=>{if(!window.chatbase.q){window.chatbase.q=[]}window.chatbase.q.push(arguments)};window.chatbase=new Proxy(window.chatbase,{get(target,prop){if(prop==="q"){return target.q}return(...args)=>target(prop,...args)}})}const onLoad=function(){const script=document.createElement("script");script.src="https://www.chatbase.co/embed.min.js";script.id="Ie42z57d6pT_nwLvZF5c7";script.domain="www.chatbase.co";document.body.appendChild(script)};if(document.readyState==="complete"){onLoad()}else{window.addEventListener("load",onLoad)}})();
     </script>
 </body>
