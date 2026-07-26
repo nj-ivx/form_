@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feras Company | Medical Portal</title>
+    <title>Feras Company | Dashboard</title>
     
     <!-- 1. Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,6 +11,7 @@
     <script src="supabaseClient.js"></script>
     
     <style>
+        /* Modern Enterprise CSS Variables */
         :root {
             --bg-main: #f8fafc;
             --bg-surface: #ffffff;
@@ -18,11 +19,17 @@
             --text-primary: #0f172a;
             --text-secondary: #64748b;
             --brand-color: #2563eb;
+            --brand-hover: #1d4ed8;
             --border-color: #e2e8f0;
             --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --badge-admin-bg: #dbeafe;
+            --badge-admin-text: #1e40af;
+            --badge-user-bg: #e2e8f0;
+            --badge-user-text: #475569;
             --transition-speed: 0.3s;
         }
 
+        /* Dark Mode Variables */
         body.dark-mode {
             --bg-main: #0f172a;
             --bg-surface: #1e293b;
@@ -32,6 +39,10 @@
             --brand-color: #3b82f6;
             --border-color: #334155;
             --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --badge-admin-bg: #1e3a8a;
+            --badge-admin-text: #bfdbfe;
+            --badge-user-bg: #334155;
+            --badge-user-text: #cbd5e1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
@@ -45,6 +56,7 @@
             transition: all var(--transition-speed);
         }
 
+        /* Navigation */
         nav {
             position: fixed; top: 0; width: 100%;
             background: var(--bg-nav);
@@ -54,87 +66,205 @@
             display: flex; justify-content: space-between; align-items: center;
         }
 
-        .logo { font-size: 22px; font-weight: 800; }
+        .logo { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--brand-color); }
+        
+        .nav-controls { display: flex; align-items: center; gap: 15px; }
+        
+        .user-pill {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--bg-surface); border: 1px solid var(--border-color);
+            padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600;
+        }
+
         .theme-switch {
             background: var(--bg-surface); border: 1px solid var(--border-color);
             color: var(--text-primary); padding: 8px 16px; border-radius: 20px;
             font-size: 14px; font-weight: 600; cursor: pointer; display: flex; gap: 8px;
         }
 
-        main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 120px 20px 40px; text-align: center; max-width: 1000px; margin: 0 auto; width: 100%; }
+        main { 
+            flex: 1; padding: 120px 5% 60px; max-width: 1200px; margin: 0 auto; width: 100%; 
+            display: none; /* Hidden until auth verifies */
+            flex-direction: column; gap: 40px;
+        }
         
-        .hero-badge { background-color: rgba(37, 99, 235, 0.1); color: var(--brand-color); padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; margin-bottom: 24px; text-transform: uppercase; }
-        h1 { font-size: 48px; font-weight: 900; margin-bottom: 20px; }
-        .subtitle { font-size: 18px; color: var(--text-secondary); max-width: 600px; margin-bottom: 50px; line-height: 1.6;}
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex; flex-direction: column; gap: 10px;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 30px;
+        }
         
-        .card-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 30px; width: 100%; margin-bottom: 50px; }
-        .card { flex: 1; min-width: 320px; max-width: 450px; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px 30px; text-decoration: none; color: inherit; text-align: left; box-shadow: var(--card-shadow); transition: transform 0.3s; position: relative; display: flex; flex-direction: column; }
+        .dashboard-header h1 { font-size: 36px; font-weight: 900; letter-spacing: -0.5px; }
+        
+        .role-badge {
+            align-self: flex-start; padding: 6px 14px; border-radius: 20px;
+            font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .role-badge.admin { background-color: var(--badge-admin-bg); color: var(--badge-admin-text); }
+        .role-badge.user { background-color: var(--badge-user-bg); color: var(--badge-user-text); }
+
+        /* Section Styling */
+        .section-title { font-size: 18px; font-weight: 700; color: var(--text-secondary); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+        
+        .card { 
+            background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; 
+            padding: 35px 30px; text-decoration: none; color: inherit; 
+            box-shadow: var(--card-shadow); transition: transform 0.3s, border-color 0.3s; 
+            position: relative; display: flex; flex-direction: column; 
+        }
         .card:hover { transform: translateY(-5px); border-color: var(--brand-color); }
-        .card-icon { font-size: 32px; margin-bottom: 20px; background: var(--bg-main); width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); }
-        .card h2 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-        .card p { color: var(--text-secondary); font-size: 15px; margin-bottom: 24px; flex-grow: 1; }
-        .card-link { font-size: 15px; font-weight: 600; color: var(--brand-color); }
+        .card-icon { font-size: 28px; margin-bottom: 20px; background: var(--bg-main); width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 12px; border: 1px solid var(--border-color); }
+        .card h2 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .card p { color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; flex-grow: 1; line-height: 1.6; }
+        .card-link { font-size: 14px; font-weight: 600; color: var(--brand-color); display: flex; align-items: center; gap: 5px;}
+        
+        /* Stats Mockup (Admin Only) */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 20px; }
+        .stat-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 5px; }
+        .stat-value { font-size: 32px; font-weight: 900; color: var(--brand-color); }
+        .stat-label { font-size: 13px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; }
 
-        .overview-section { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 50px 40px; text-align: left; box-shadow: var(--card-shadow); width: 100%; }
-        .overview-section h2 { font-size: 28px; margin-bottom: 20px; }
-        .overview-section p { color: var(--text-secondary); line-height: 1.8; margin-bottom: 15px; }
-
-        footer { padding: 30px; text-align: center; margin-top: auto; }
-        .logout-btn { color: var(--danger-color); font-size: 13px; font-weight: 700; background: none; border: none; cursor: pointer; }
-        .logout-btn:hover { text-decoration: underline; }
+        footer { padding: 30px; text-align: center; border-top: 1px solid var(--border-color); background: var(--bg-surface); }
+        .logout-btn { color: var(--danger-color); font-size: 13px; font-weight: 700; background: none; border: none; cursor: pointer; transition: opacity 0.2s; }
+        .logout-btn:hover { opacity: 0.7; }
+        
+        /* Container Visibility Toggles */
+        #admin-panel, #user-panel { display: none; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="logo">Feras Company</div>
-        <button type="button" id="themeToggle" class="theme-switch">
-            <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
-        </button>
+        <div class="logo"><span>✦</span> Feras Company</div>
+        <div class="nav-controls">
+            <div class="user-pill">
+                <span id="nav-email">Loading...</span>
+            </div>
+            <button type="button" id="themeToggle" class="theme-switch">
+                <span id="themeIcon">🌙</span> <span id="themeText">Dark</span>
+            </button>
+        </div>
     </nav>
 
-    <main id="main-content" style="display: none;"> <!-- Hidden until auth is verified -->
-        <div class="hero-badge">Medical Administration Portal</div>
-        <h1>Streamlined Patient Data Management</h1>
-        <p class="subtitle">Securely register new patients, update medical histories, and manage administrative records through our unified enterprise portal.</p>
+    <main id="main-content">
+        
+        <header class="dashboard-header">
+            <div id="dynamic-badge" class="role-badge user">Standard User</div>
+            <h1 id="greeting">Welcome to the Portal</h1>
+        </header>
 
-        <div class="card-grid">
-            <a href="form.html" class="card">
-                <div class="card-icon">📋</div>
-                <h2>Patient Registration</h2>
-                <p>Access the encrypted intake form to register new patients, record medical histories, and process insurance details.</p>
-                <div class="card-link">Open Form <span>→</span></div>
-            </a>
-            
-            <a href="https://supabase.com/dashboard" target="_blank" class="card">
-                <div class="card-icon">🗄️</div>
-                <h2>Admin Database</h2>
-                <p>Access your Supabase dashboard to view and manage all securely submitted patient records.</p>
-                <div class="card-link">Access Dashboard <span>→</span></div>
-            </a>
+        <!-- ========================================== -->
+        <!-- ADMIN PANEL (Only visible to Administrators) -->
+        <!-- ========================================== -->
+        <div id="admin-panel">
+            <h3 class="section-title">System Overview</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-value">Active</span>
+                    <span class="stat-label">Database Status</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">Secured</span>
+                    <span class="stat-label">Network Protocol</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-value">v2.4.0</span>
+                    <span class="stat-label">Portal Version</span>
+                </div>
+            </div>
+
+            <h3 class="section-title">Administrative Tools</h3>
+            <div class="card-grid">
+                <a href="form.html" class="card">
+                    <div class="card-icon">📋</div>
+                    <h2>New Patient Intake</h2>
+                    <p>Access the encrypted form to register new patients and insert records directly into the secure database.</p>
+                    <div class="card-link">Open Form <span>→</span></div>
+                </a>
+                
+                <a href="https://supabase.com/dashboard" target="_blank" class="card">
+                    <div class="card-icon">🗄️</div>
+                    <h2>Database Management</h2>
+                    <p>Open the Supabase SQL architecture panel to view, manage, and audit all submitted patient records.</p>
+                    <div class="card-link">Access Server <span>→</span></div>
+                </a>
+            </div>
         </div>
 
-        <div class="overview-section">
-            <h2>About Feras Company</h2>
-            <p>Feras Company is a premier healthcare administration provider dedicated to modernizing the patient experience. By bridging the gap between advanced medical technology and seamless administrative operations, we ensure that both patients and healthcare professionals have a secure, efficient, and reliable digital platform.</p>
+        <!-- ========================================== -->
+        <!-- USER PANEL (Visible to Standard Accounts)  -->
+        <!-- ========================================== -->
+        <div id="user-panel">
+            <h3 class="section-title">Patient Services</h3>
+            <div class="card-grid">
+                <a href="form.html" class="card">
+                    <div class="card-icon">📝</div>
+                    <h2>Submit Medical Record</h2>
+                    <p>Fill out your medical history, personal details, and insurance information prior to your appointment.</p>
+                    <div class="card-link">Start Registration <span>→</span></div>
+                </a>
+                
+                <div class="card" style="opacity: 0.6; cursor: not-allowed;">
+                    <div class="card-icon">📅</div>
+                    <h2>My Appointments</h2>
+                    <p>View upcoming consultations and manage scheduling. (Feature currently rolling out to all users).</p>
+                    <div class="card-link" style="color: var(--text-secondary);">Coming Soon</div>
+                </div>
+            </div>
         </div>
+
     </main>
 
     <footer>
-        <button id="logoutBtn" class="logout-btn">🔒 Secure Logout</button>
+        <button id="logoutBtn" class="logout-btn">🔒 Securely Sign Out</button>
     </footer>
 
     <script>
-        // 1. SUPABASE AUTH GUARD
-        async function checkAuth() {
+        // 1. SUPABASE AUTH & ROLE ROUTING
+        async function checkAuthAndSetRole() {
             const { data: { session } } = await window.supabaseApp.auth.getSession();
+            
+            // If no user is logged in, kick them back to auth.html
             if (!session) {
-                window.location.href = 'auth.html'; // Kick out unauthorized users
+                window.location.href = 'auth.html';
+                return;
+            }
+
+            const userEmail = session.user.email;
+            
+            // UI Updates
+            document.getElementById('nav-email').innerText = userEmail;
+            document.getElementById('main-content').style.display = 'flex';
+
+            // ROLE LOGIC: 
+            // We are designating any email containing "feras" or "admin" as a System Administrator.
+            const isAdmin = userEmail.toLowerCase().includes('admin') || userEmail.toLowerCase().includes('feras');
+
+            const badge = document.getElementById('dynamic-badge');
+            
+            if (isAdmin) {
+                // Show Admin Interface
+                document.getElementById('admin-panel').style.display = 'block';
+                document.getElementById('user-panel').style.display = 'none';
+                
+                badge.className = 'role-badge admin';
+                badge.innerText = 'System Administrator';
+                document.getElementById('greeting').innerText = 'Welcome back, Director.';
             } else {
-                document.getElementById('main-content').style.display = 'flex'; // Reveal page
+                // Show User Interface
+                document.getElementById('admin-panel').style.display = 'none';
+                document.getElementById('user-panel').style.display = 'block';
+                
+                badge.className = 'role-badge user';
+                badge.innerText = 'Standard Patient';
+                document.getElementById('greeting').innerText = 'Welcome to your portal.';
             }
         }
-        checkAuth();
+        
+        checkAuthAndSetRole();
 
         // 2. LOGOUT FUNCTIONALITY
         document.getElementById('logoutBtn').addEventListener('click', async () => {
