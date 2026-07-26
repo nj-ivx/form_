@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feras Company | Secure Access</title>
     
-    <!-- 1. Supabase JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- 2. Your Shared Supabase Client -->
     <script src="supabaseClient.js"></script>
 
     <style>
@@ -40,143 +38,31 @@
             --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            transition: background-color var(--transition-speed);
-        }
+        body { background-color: var(--bg-main); color: var(--text-primary); display: flex; justify-content: center; align-items: center; min-height: 100vh; transition: background-color var(--transition-speed); }
 
-        .auth-container {
-            width: 100%;
-            max-width: 420px;
-            background: var(--bg-surface);
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: var(--card-shadow);
-            border: 1px solid var(--border-color);
-        }
+        .auth-container { width: 100%; max-width: 420px; background: var(--bg-surface); padding: 40px; border-radius: 16px; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); }
+        .logo { text-align: center; font-size: 24px; font-weight: 800; margin-bottom: 10px; letter-spacing: -0.5px; }
+        .logo span { color: var(--brand-color); }
+        .subtitle { text-align: center; color: var(--text-secondary); font-size: 14px; margin-bottom: 30px; }
 
-        .logo {
-            text-align: center;
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 10px;
-            letter-spacing: -0.5px;
-        }
-
-        .logo span {
-            color: var(--brand-color);
-        }
-
-        .subtitle {
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 30px;
-        }
-
-        .auth-toggle {
-            display: flex;
-            background: var(--bg-main);
-            border-radius: 8px;
-            padding: 4px;
-            margin-bottom: 30px;
-            border: 1px solid var(--border-color);
-        }
-
-        .toggle-btn {
-            flex: 1;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 6px;
-            transition: all 0.2s ease;
-            color: var(--text-secondary);
-        }
-
-        .toggle-btn.active {
-            background: var(--bg-surface);
-            color: var(--brand-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
+        .auth-toggle { display: flex; background: var(--bg-main); border-radius: 8px; padding: 4px; margin-bottom: 30px; border: 1px solid var(--border-color); }
+        .toggle-btn { flex: 1; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s ease; color: var(--text-secondary); }
+        .toggle-btn.active { background: var(--bg-surface); color: var(--brand-color); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+        input { width: 100%; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-primary); font-size: 14px; outline: none; transition: border 0.2s ease, box-shadow 0.2s ease; }
+        input:focus { border-color: var(--brand-color); box-shadow: 0 0 0 4px var(--input-focus-ring); }
 
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: var(--input-bg);
-            color: var(--text-primary);
-            font-size: 14px;
-            outline: none;
-            transition: border 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        input:focus {
-            border-color: var(--brand-color);
-            box-shadow: 0 0 0 4px var(--input-focus-ring);
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 14px;
-            background: var(--brand-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            margin-top: 10px;
-        }
-
+        .submit-btn { width: 100%; padding: 14px; background: var(--brand-color); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.2s ease; margin-top: 10px; }
         .submit-btn:hover { background: var(--brand-hover); }
         .submit-btn:disabled { opacity: 0.7; cursor: not-allowed; }
 
-        .message {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            display: none;
-        }
-
-        .message.error {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--danger-color);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        .message.success {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success-color);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-        }
+        .message { margin-top: 20px; padding: 12px; border-radius: 8px; font-size: 13px; font-weight: 600; text-align: center; display: none; }
+        .message.error { background: rgba(239, 68, 68, 0.1); color: var(--danger-color); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .message.success { background: rgba(16, 185, 129, 0.1); color: var(--success-color); border: 1px solid rgba(16, 185, 129, 0.2); }
     </style>
 </head>
 <body>
@@ -208,7 +94,6 @@
     </div>
 
     <script>
-        // Check session: if already logged in, go straight to index
         window.onload = async () => {
             const { data: { session } } = await window.supabaseApp.auth.getSession();
             if (session) {
@@ -216,18 +101,16 @@
             }
         };
 
-        // UI Toggle Logic
         let currentMode = 'login';
         function switchMode(mode) {
             currentMode = mode;
             document.getElementById('btn-login').classList.toggle('active', mode === 'login');
             document.getElementById('btn-signup').classList.toggle('active', mode === 'signup');
             document.getElementById('submit-btn').innerText = mode === 'login' ? 'Sign In' : 'Create Account';
-            document.getElementById('form-subtitle').innerText = mode === 'login' ? 'Sign in to the administrative portal' : 'Register a new administrator account';
+            document.getElementById('form-subtitle').innerText = mode === 'login' ? 'Sign in to the administrative portal' : 'Register a new account';
             document.getElementById('status-message').style.display = 'none';
         }
 
-        // Authentication Logic
         document.getElementById('auth-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             
@@ -240,8 +123,17 @@
 
             try {
                 if (currentMode === 'signup') {
-                    const { error } = await window.supabaseApp.auth.signUp({ email, password });
+                    // Create the user
+                    const { data, error } = await window.supabaseApp.auth.signUp({ email, password });
                     if (error) throw error;
+                    
+                    // Assign default 'user' role
+                    if (data.user) {
+                        await window.supabaseApp.from('user_roles').insert([
+                            { user_id: data.user.id, role: 'user' }
+                        ]);
+                    }
+                    
                     showMessage('Account created! Please check your email to verify.', 'success');
                 } else {
                     const { error } = await window.supabaseApp.auth.signInWithPassword({ email, password });
